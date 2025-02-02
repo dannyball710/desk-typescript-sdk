@@ -1,0 +1,67 @@
+{
+  "name": "desk-exchange",
+  "version": "1.0.0",
+  "description": "Typescript SDK for DESK Exchange API",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "build:watch": "tsc --watch",
+    "clean": "rimraf dist",
+    "prepare": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node src/index.ts"
+  },
+  "keywords": [
+    "desk",
+    "desk-exchange",
+    "api",
+    "sdk",
+    "rest",
+    "websocket",
+    "trading",
+    "crypto",
+    "blockchain",
+    "base",
+    "dex",
+    "perp",
+    "perpetual"
+  ],
+  "author": "DESK",
+  "license": "MIT",
+  "dependencies": {
+    "@msgpack/msgpack": "^3.0.0-beta2",
+    "@types/ws": "^8.5.11",
+    "axios": "^1.7.2",
+    "ethers": "^6.13.2",
+    "typescript": "^5.5.4",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "dotenv": "^16.4.5",
+    "rimraf": "^5.0.0",
+    "ts-node": "^10.9.1",
+    "tsup": "^8.3.5"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": ">=23.0.0"
+  }
+}
