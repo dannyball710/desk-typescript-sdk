@@ -47,3 +47,43 @@ export interface SubaccountSummary {
   position_imr: string;
   position_mmr: string;
 }
+
+export interface OrderRequest {
+  symbol: string;
+  amount: string;
+  price: string;
+  side: "Long" | "Short";
+  orderType: "Limit" | "Market" | "StopMarket" | "TakeProfitMarket";
+  reduceOnly: boolean;
+  timeInForce: "GTC" | "IOC" | "FOK" | undefined;
+}
+
+export interface OrderApiRequest {
+  symbol: string;
+  subaccount: string;
+  amount: string;
+  price: string;
+  side: "Long" | "Short";
+  nonce: string;
+  broker_id: string;
+  order_type: "Limit" | "Market" | "StopMarket" | "TakeProfitMarket";
+  reduce_only: boolean;
+  time_in_force: "GTC" | "IOC" | "FOK";
+}
+
+export interface OrderApiResponse {
+  subaccount: string;
+  symbol: string;
+  side: "Long" | "Short";
+  price: string;
+  quantity: string;
+  nonce: string;
+  order_type: "Limit" | "Market" | "StopMarket" | "TakeProfitMarket";
+  time_in_force: "GTC" | "IOC" | "FOK";
+  order_digest: string;
+  filled_quantity: string;
+  avg_fill_price: string;
+  execution_fee: string;
+  client_order_id: string | null;
+  trigger_price: string | null;
+}

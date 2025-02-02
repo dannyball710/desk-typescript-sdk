@@ -48,7 +48,6 @@ export class Auth {
 
     if (response.status === 200) {
       const jwt = response.data.data.jwt;
-      console.log(jwt);
       this.client.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
     } else {
       throw new Error("Could not generate JWT");
