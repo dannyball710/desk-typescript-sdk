@@ -55,7 +55,7 @@ export interface OrderRequest {
   side: "Long" | "Short";
   orderType: "Limit" | "Market" | "StopMarket" | "TakeProfitMarket";
   reduceOnly: boolean;
-  timeInForce: "GTC" | "IOC" | "FOK" | undefined;
+  timeInForce?: "GTC" | "IOC" | "FOK" | undefined;
 }
 
 export interface OrderApiRequest {
