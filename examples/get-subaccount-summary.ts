@@ -13,6 +13,8 @@ async function main() {
   );
 
   await client.authenticate();
+  const subAccountSummary = await client.exchange.getSubAccountSummary();
+  console.log(subAccountSummary);
 }
 
 main().catch(console.error);

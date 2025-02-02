@@ -2,14 +2,15 @@ import { ethers } from "ethers";
 import * as CONSTANTS from "./types/constants";
 import { Auth } from "./api/auth";
 import { Network } from "./types";
+import { Exchange } from "./api/exchange";
 
 export class DeskExchange {
-  private privateKey: string;
   public auth: Auth;
+  public exchange: Exchange;
 
   constructor(network: Network, privateKey: string, subAccountId: number) {
-    this.privateKey = privateKey;
     this.auth = new Auth(network, privateKey, subAccountId);
+    this.exchange = new Exchange(this.auth);
   }
 
   public async authenticate(): Promise<void> {

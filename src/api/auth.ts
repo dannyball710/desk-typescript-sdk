@@ -54,4 +54,13 @@ export class Auth {
       throw new Error("Could not generate JWT");
     }
   }
+
+  public getSubaccount = (): string => {
+    // pad address with subaccountId to be 32 bytes (64 hex characters)
+    //  0x + 40 hex characters (address) + 24 hex characters (subaccountId)
+    const subaccountIdHex = BigInt(this.subAccountId)
+      .toString(16)
+      .padStart(24, "0");
+    return this.wallet.address.concat(subaccountIdHex);
+  };
 }
