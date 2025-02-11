@@ -1,4 +1,3 @@
-import axios, { AxiosInstance } from "axios";
 import { Auth } from "./auth";
 import {
   OrderRequest,
@@ -10,15 +9,19 @@ import {
   CancelOrderApiRequest,
 } from "../types";
 import { BROKER_ID } from "../types/constants";
+import { DeskExchange } from "..";
 
 export class Exchange {
   private auth: Auth;
+  private parent: DeskExchange;
 
-  constructor(auth: Auth) {
+  constructor(auth: Auth, parent: DeskExchange) {
     this.auth = auth;
+    this.parent = parent;
   }
 
   public async getSubAccountSummary(): Promise<SubaccountSummary> {
+    await this.parent.ensureInitialized();
     const response = await this.auth.client.get(
       `/v2/subaccount-summary/${this.auth.getSubaccount()}`
     );
@@ -26,6 +29,7 @@ export class Exchange {
   }
 
   public async placeOrder(request: OrderRequest): Promise<OrderApiResponse> {
+    await this.parent.ensureInitialized();
     const response = await this.auth.client.post(`v2/place-order`, {
       symbol: request.symbol,
       subaccount: this.auth.getSubaccount(),
@@ -44,6 +48,7 @@ export class Exchange {
   public async cancelOrder(
     request: CancelOrderRequest
   ): Promise<CancelOrderApiResponse> {
+    await this.parent.ensureInitialized();
     const response = await this.auth.client.post<{
       data: CancelOrderApiResponse;
     }>(`/v2/cancel-order`, {
@@ -61,6 +66,7 @@ export class Exchange {
   public async batchCancelOrder(
     requests: CancelOrderRequest[]
   ): Promise<CancelOrderApiResponse[]> {
+    await this.parent.ensureInitialized();
     const cancelRequests = requests.map((request) => this.cancelOrder(request));
 
     return Promise.all(cancelRequests);

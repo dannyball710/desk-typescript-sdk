@@ -5,9 +5,9 @@ import { BASE_URLS } from "../types/constants";
 import { Network } from "../types";
 
 export class Auth {
-  private readonly privateKey: string;
   private readonly wallet: ethers.Wallet;
   private readonly subAccountId: number;
+  private authenticated: boolean;
   public client: AxiosInstance;
   public network: Network;
 
@@ -16,7 +16,6 @@ export class Auth {
     privateKey: string = process.env.PRIVATE_KEY!,
     subAccountId: number
   ) {
-    this.privateKey = privateKey;
     this.wallet = new ethers.Wallet(privateKey);
     this.subAccountId = subAccountId;
     this.network = network;
@@ -26,6 +25,7 @@ export class Auth {
         "Content-Type": "application/json",
       },
     });
+    this.authenticated = false;
   }
 
   public generateNonce(): string {
@@ -51,11 +51,12 @@ export class Auth {
     if (response.status === 200) {
       const jwt = response.data.data.jwt;
       this.client.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
+      this.authenticated = true;
     } else {
       throw new Error("Could not generate JWT");
     }
   }
-  
+
   public getSubaccount = (): string => {
     // pad address with subaccountId to be 32 bytes (64 hex characters)
     //  0x + 40 hex characters (address) + 24 hex characters (subaccountId)
@@ -64,4 +65,8 @@ export class Auth {
       .padStart(24, "0");
     return this.wallet.address.concat(subaccountIdHex);
   };
+
+  public isAuthenticated(): boolean {
+    return this.authenticated;
+  }
 }

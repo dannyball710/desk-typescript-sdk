@@ -6,13 +6,13 @@ async function main() {
     throw new Error("PRIVATE_KEY is required in .env file");
   }
 
-  const sdk = new DeskExchange(
-    "testnet",
-    process.env.PRIVATE_KEY,
-    0 // subAccountId
-  );
+  const sdk = new DeskExchange({
+    network: "testnet",
+    privateKey: process.env.PRIVATE_KEY,
+    subAccountId: 0,
+    enableWs: false,
+  });
 
-  await sdk.authenticate();
   const response = await sdk.exchange.placeOrder({
     symbol: "BTCUSD",
     amount: "0.1",

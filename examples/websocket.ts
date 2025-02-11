@@ -6,15 +6,14 @@ async function main() {
     throw new Error("PRIVATE_KEY is required in .env file");
   }
 
-  const sdk = new DeskExchange(
-    "testnet",
-    process.env.PRIVATE_KEY,
-    0 // subAccountId
-  );
+  const sdk = new DeskExchange({
+    network: "testnet",
+    privateKey: process.env.PRIVATE_KEY,
+    subAccountId: 0,
+    enableWs: true,
+  });
 
   try {
-    await sdk.authenticate();
-    await sdk.wsClient.connect();
     await sdk.subscriptions.subscribeToMarkPrices((data) => {
       console.log("Received mark price data:", data);
     });

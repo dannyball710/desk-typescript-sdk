@@ -11,16 +11,45 @@ export class DeskExchange {
   public exchange: Exchange;
   public wsClient: WebSocketClient;
   public subscriptions: WebSocketSubscriptions;
+  public enableWs: boolean;
+  private initialized: boolean;
 
-  constructor(network: Network, privateKey: string, subAccountId: number) {
-    this.auth = new Auth(network, privateKey, subAccountId);
-    this.exchange = new Exchange(this.auth);
+  constructor(params: {
+    network: Network;
+    privateKey: string;
+    subAccountId: number;
+    enableWs: boolean;
+  }) {
+    this.auth = new Auth(
+      params.network,
+      params.privateKey,
+      params.subAccountId
+    );
+    this.exchange = new Exchange(this.auth, this);
     this.wsClient = new WebSocketClient(this.auth);
     this.subscriptions = new WebSocketSubscriptions(this.wsClient);
+    this.enableWs = params.enableWs;
+    this.initialized = false;
+  }
+
+  private async initialize(): Promise<void> {
+    await this.auth.generateJwt();
+    if (this.enableWs) await this.wsClient.connect();
+    this.initialized = true;
+  }
+
+  public async ensureInitialized(): Promise<void> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
   }
 
   public async authenticate(): Promise<void> {
     await this.auth.generateJwt();
+  }
+
+  public isInitialized(): boolean {
+    return this.initialized;
   }
 }
 
