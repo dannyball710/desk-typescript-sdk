@@ -88,10 +88,6 @@ export interface OrderApiResponse {
   trigger_price: string | null;
 }
 
-export interface BatchCancelOrderApiResponse {
-  processed_orders: number;
-}
-
 export interface CancelOrderApiRequest {
   symbol: string;
   subaccount: string;
@@ -99,14 +95,12 @@ export interface CancelOrderApiRequest {
   order_digest: string;
   is_conditional_order: boolean;
   wait_for_reply: boolean;
-  client_order_id?: string;
 }
 
 export interface CancelOrderRequest {
   symbol: string;
   orderDigest: string;
   waitForReply: boolean;
-  clientOrderId?: string;
 }
 
 interface CancelledOrder {
@@ -116,4 +110,18 @@ interface CancelledOrder {
 
 export interface CancelOrderApiResponse {
   orders: CancelledOrder[];
+}
+
+export interface MarkPrice {
+  symbol: string;
+  markPrice: string;
+  indexPrice: string;
+}
+
+// Type for a single order book entry [price, quantity]
+type OrderBookEntry = [string, string];
+
+export interface OrderBook {
+  bids: OrderBookEntry[]; // Array of [price, quantity] for buy orders
+  asks: OrderBookEntry[]; // Array of [price, quantity] for sell orders
 }
