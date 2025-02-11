@@ -13,7 +13,7 @@ A TypeScript client for interacting with DESK Exchange API, featuring JWT authen
 
 ## Installation
 
-```
+```shell
 npm install @desk-exchange/sdk
 # or
 yarn add @desk-exchange/sdk
@@ -23,49 +23,47 @@ yarn add @desk-exchange/sdk
 
 ### Initialize the Client
 
-```
-import { DeskExchange } from '@desk-exchange/sdk';
+```typescript
+import { DeskExchange } from "@desk-exchange/sdk";
 
-const client = new DeskExchange(
-    "testnet",
-    process.env.PRIVATE_KEY,
-    0 // subAccountId
-  );
-
-// Generate JWT for authentication
-await client.authenticate();
+const sdk = new DeskExchange({
+  network: "testnet",
+  privateKey: process.env.PRIVATE_KEY,
+  subAccountId: 0,
+  enableWs: false, // true if you want to connect to websocket
+});
 ```
 
 ### Account Management
 
-```
+```typescript
 // Get account information
 const accountInfo = await sdk.exchange.getSubAccountSummary();
 ```
 
 ### Trading Operations
 
-```
+```typescript
 // Place a limit order
 const limitOrder = await sdk.exchange.placeOrder({
-    symbol: "BTCUSD",
-    amount: "0.1",
-    price: "99714.4",
-    side: "Long",
-    orderType: "Limit",
-    reduceOnly: false,
-    timeInForce: "GTC",
-  });
+  symbol: "BTCUSD",
+  amount: "0.1",
+  price: "99714.4",
+  side: "Long",
+  orderType: "Limit",
+  reduceOnly: false,
+  timeInForce: "GTC",
+});
 
 // Place a market order
 const marketOrder = await sdk.exchange.placeOrder({
-    symbol: "BTCUSD",
-    amount: "0.0001",
-    price: "0",
-    side: "Short",
-    orderType: "Market",
-    reduceOnly: false,
-  });
+  symbol: "BTCUSD",
+  amount: "0.0001",
+  price: "0",
+  side: "Short",
+  orderType: "Market",
+  reduceOnly: false,
+});
 
 // Cancel an order
 await sdk.exchange.cancelOrder(orderId);
@@ -73,40 +71,18 @@ await sdk.exchange.cancelOrder(orderId);
 
 ### WebSocket Streams
 
-```
-// Subscribe to order updates
-client.ws.subscribeOrders((order) => {
-  console.log('Order update:', order);
+```typescript
+await sdk.subscriptions.subscribeToMarkPrices((data) => {
+  console.log("Received mark price data:", data);
 });
-
-// Subscribe to trade updates
-client.ws.subscribeTrades('BTC-USDT', (trade) => {
-  console.log('New trade:', trade);
-});
-
-// Subscribe to market data
-client.ws.subscribeMarketData('ETH-USDT', (data) => {
-  console.log('Market data update:', data);
-});
-```
-
-## Configuration
-
-The client can be configured with different environments and options:
-
-```
-const client = new DeskExchange(wallet, {
-  network: 'mainnet',                   // 'mainnet' or 'testnet' environment
-  privateKey: process.env.PRIVATE_KEY,  // EVM wallet private key from .env file
-  subAccountId: 0,                      // Sub-account Id to interact with,
-                                        // for multiple sub-account, you can initialize multiple
-                                        // DeskExchange
+await sdk.subscriptions.subscribeToOrderbook("BTCUSD", (data) => {
+  console.log("Received BTCUSD orderbook data:", data);
 });
 ```
 
 ## Running examples
 
-```
+```shell
 pnpm exec tsx examples/***.ts
 ```
 
@@ -117,7 +93,6 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 ## License
 
 ```
-
-MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see the LICENSE file for details.
 
 ```
