@@ -13,8 +13,16 @@ async function main() {
   );
 
   await sdk.authenticate();
-  const subAccountSummary = await sdk.exchange.getSubAccountSummary();
-  console.log(subAccountSummary);
+  const response = await sdk.exchange.placeOrder({
+    symbol: "BTCUSD",
+    amount: "0.1",
+    price: "99714.4",
+    side: "Long",
+    orderType: "Limit",
+    reduceOnly: false,
+    timeInForce: "GTC",
+  });
+  console.log(response);
 }
 
 main().catch(console.error);

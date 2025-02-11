@@ -13,8 +13,15 @@ async function main() {
   );
 
   await sdk.authenticate();
-  const subAccountSummary = await sdk.exchange.getSubAccountSummary();
-  console.log(subAccountSummary);
+  const response = await sdk.exchange.placeOrder({
+    symbol: "BTCUSD",
+    amount: "0.0001",
+    price: "0",
+    side: "Short",
+    orderType: "Market",
+    reduceOnly: false,
+  });
+  console.log(response);
 }
 
 main().catch(console.error);
