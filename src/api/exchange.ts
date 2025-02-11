@@ -9,6 +9,7 @@ import {
   OrderApiRequest,
   CancelOrderApiRequest,
 } from "../types";
+import { BROKER_ID } from "../types/constants";
 
 export class Exchange {
   private auth: Auth;
@@ -32,7 +33,7 @@ export class Exchange {
       price: request.price,
       side: request.side,
       nonce: this.auth.generateNonce(),
-      broker_id: process.env.BROKER || "DESK",
+      broker_id: BROKER_ID,
       order_type: request.orderType,
       reduce_only: request.reduceOnly,
       time_in_force: request.timeInForce,

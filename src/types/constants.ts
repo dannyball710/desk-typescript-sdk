@@ -7,3 +7,5 @@ export const WSS_URLS = {
   mainnet: "wss://ws-api.happytrading.global/ws",
   testnet: "wss://stg-trade-ws-api.happytrading.global/ws",
 };
+
+export const BROKER_ID = "DESK-SDK";
