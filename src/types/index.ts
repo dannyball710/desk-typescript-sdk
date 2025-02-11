@@ -125,3 +125,21 @@ export interface OrderBook {
   bids: OrderBookEntry[]; // Array of [price, quantity] for buy orders
   asks: OrderBookEntry[]; // Array of [price, quantity] for sell orders
 }
+
+// Market information types
+export interface MarketInfo {
+  id: number;
+  symbol: string;
+  name: string;
+  base_asset: string;
+  quote_asset: string;
+  imf: string;
+  mmf: string;
+  maker_fee: string;
+  taker_fee: string;
+  price_feed_id: number;
+  tick_size: string;
+  lot_size: string;
+  min_notional_size: string;
+  max_conditional_orders: number;
+}

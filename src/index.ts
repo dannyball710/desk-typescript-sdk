@@ -5,10 +5,12 @@ import { Network } from "./types";
 import { Exchange } from "./api/exchange";
 import { WebSocketClient } from "./websocket/connection";
 import { WebSocketSubscriptions } from "./websocket/subscriptions";
+import { Info } from "./api/info";
 
 export class DeskExchange {
   public auth: Auth;
   public exchange: Exchange;
+  public info: Info;
   public wsClient: WebSocketClient;
   public subscriptions: WebSocketSubscriptions;
   public enableWs: boolean;
@@ -26,6 +28,7 @@ export class DeskExchange {
       params.subAccountId
     );
     this.exchange = new Exchange(this.auth, this);
+    this.info = new Info(this.auth, this);
     this.wsClient = new WebSocketClient(this.auth);
     this.subscriptions = new WebSocketSubscriptions(this.wsClient, this);
     this.enableWs = params.enableWs;

@@ -64,7 +64,7 @@ export class Auth {
     const subaccountIdHex = BigInt(this.subAccountId)
       .toString(16)
       .padStart(24, "0");
-    return this.wallet.address.concat(subaccountIdHex);
+    return this.wallet!.address.concat(subaccountIdHex);
   };
 
   public isAuthenticated(): boolean {
