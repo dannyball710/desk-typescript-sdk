@@ -1,5 +1,5 @@
 {
-  "name": "desk-exchange",
+  "name": "@desk-exchange/sdk",
   "version": "1.0.0",
   "description": "Typescript SDK for DESK Exchange API",
   "type": "module",
@@ -19,8 +19,7 @@
     "build:watch": "tsc --watch",
     "clean": "rimraf dist",
     "prepare": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node src/index.ts"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "desk",
@@ -60,7 +59,7 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git@github.com:HMXOrg/desk-typescript-sdk.git"
   },
   "engines": {
     "node": ">=23.0.0"
