@@ -8,7 +8,7 @@ async function main() {
 
   const sdk = new DeskExchange({
     network: "testnet",
-    privateKey: process.env.PRIVATE_KEY,
+    privateKey: "", // accessing SDK without private key
     subAccountId: 0,
     enableWs: true,
   });

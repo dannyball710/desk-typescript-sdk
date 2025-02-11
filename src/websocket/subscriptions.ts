@@ -1,3 +1,4 @@
+import { DeskExchange } from "..";
 import { MarkPrice, OrderBook } from "../types";
 import { WebSocketClient } from "./connection";
 
@@ -16,10 +17,12 @@ interface SubscriptionCallback {
 
 export class WebSocketSubscriptions {
   private ws: WebSocketClient;
+  private parent: DeskExchange;
   private subscriptions: Map<string, Set<SubscriptionCallback>> = new Map();
 
-  constructor(ws: WebSocketClient) {
+  constructor(ws: WebSocketClient, parent: DeskExchange) {
     this.ws = ws;
+    this.parent = parent;
   }
 
   private getSubscriptionKey(subscription: Subscription): string {
@@ -39,6 +42,7 @@ export class WebSocketSubscriptions {
   }
 
   private async subscribe(subscription: Subscription): Promise<void> {
+    await this.parent.ensureInitialized();
     await this.ws.sendMessage({
       method: "subscribe",
       subscription,
@@ -46,6 +50,7 @@ export class WebSocketSubscriptions {
   }
 
   private async unsubscribe(subscription: Subscription): Promise<void> {
+    await this.parent.ensureInitialized();
     await this.ws.sendMessage({
       method: "unsubscribe",
       subscription,

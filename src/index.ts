@@ -27,7 +27,7 @@ export class DeskExchange {
     );
     this.exchange = new Exchange(this.auth, this);
     this.wsClient = new WebSocketClient(this.auth);
-    this.subscriptions = new WebSocketSubscriptions(this.wsClient);
+    this.subscriptions = new WebSocketSubscriptions(this.wsClient, this);
     this.enableWs = params.enableWs;
     this.initialized = false;
   }

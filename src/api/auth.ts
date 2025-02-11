@@ -5,7 +5,7 @@ import { BASE_URLS } from "../types/constants";
 import { Network } from "../types";
 
 export class Auth {
-  private readonly wallet: ethers.Wallet;
+  private readonly wallet: ethers.Wallet | undefined;
   private readonly subAccountId: number;
   private authenticated: boolean;
   public client: AxiosInstance;
@@ -16,7 +16,7 @@ export class Auth {
     privateKey: string = process.env.PRIVATE_KEY!,
     subAccountId: number
   ) {
-    this.wallet = new ethers.Wallet(privateKey);
+    this.wallet = privateKey ? new ethers.Wallet(privateKey) : undefined;
     this.subAccountId = subAccountId;
     this.network = network;
     this.client = axios.create({
@@ -35,6 +35,7 @@ export class Auth {
   }
 
   public async generateJwt() {
+    if (!this.wallet) return;
     const nonce = this.generateNonce();
     const message = `generate jwt for ${this.wallet.address?.toLowerCase()} and subaccount id ${
       this.subAccountId
