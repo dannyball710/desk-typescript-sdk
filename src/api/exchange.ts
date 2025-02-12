@@ -80,6 +80,39 @@ export class Exchange {
     return receipt;
   }
 
+  public async withdrawCollateral(
+    tokenAddress: string,
+    amount: number
+  ): Promise<ethers.ContractTransactionReceipt> {
+    if (!this.auth.wallet)
+      throw new Error("PRIVATE_KEY is required in .env file");
+
+    const erc20 = new ethers.Contract(tokenAddress, erc20ABI, this.auth.wallet);
+    const vaultAddress = VAULT_ADDRESS[this.auth.network];
+    const vaultContract = new ethers.Contract(
+      vaultAddress,
+      vaultAbi,
+      this.auth.wallet
+    );
+
+    const decimals = await erc20.decimals();
+    const amountToWithdraw = ethers.parseUnits(amount.toString(), decimals);
+    const tokenSymbol = await erc20.symbol();
+
+    console.log(
+      `Withdrawing ${amount} ${tokenSymbol} from DESK Exchange from ${this.auth.getSubaccount()}`
+    );
+
+    const tx = await vaultContract.withdraw(
+      tokenAddress,
+      this.auth.getSubaccount(),
+      amountToWithdraw
+    );
+    const receipt = (await tx.wait()) as ethers.ContractTransactionReceipt;
+    console.log("Withdrawal successful!");
+    return receipt;
+  }
+
   public async getSubAccountSummary(): Promise<SubaccountSummary> {
     await this.parent.ensureInitialized();
     const response = await this.auth.client.get(
