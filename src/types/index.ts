@@ -143,3 +143,22 @@ export interface MarketInfo {
   min_notional_size: string;
   max_conditional_orders: number;
 }
+
+export interface TokenAddress {
+  chain: string;
+  chain_id: number;
+  address: string;
+}
+
+export interface CollateralInfo {
+  asset: string;
+  collateral_id: string;
+  token_addresses: TokenAddress[];
+  decimals: number;
+  collat_factor_bps: string;
+  borrow_factor_bps: string;
+  price_feed_id: number;
+  discount_rate_bps: string;
+  withdrawal_base_fee: string;
+  priority: number;
+}

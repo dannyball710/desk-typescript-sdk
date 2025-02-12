@@ -5,18 +5,24 @@ import { BASE_URLS } from "../types/constants";
 import { Network } from "../types";
 
 export class Auth {
-  private readonly wallet: ethers.Wallet | undefined;
-  private readonly subAccountId: number;
+  public readonly wallet: ethers.Wallet | undefined;
+  public readonly subAccountId: number;
   private authenticated: boolean;
-  public client: AxiosInstance;
-  public network: Network;
+  public readonly client: AxiosInstance;
+  public readonly network: Network;
+  public readonly provider: ethers.Provider;
 
   constructor(
     network: Network,
     privateKey: string = process.env.PRIVATE_KEY!,
     subAccountId: number
   ) {
-    this.wallet = privateKey ? new ethers.Wallet(privateKey) : undefined;
+    this.provider = new ethers.JsonRpcProvider(
+      "https://arbitrum-sepolia-rpc.publicnode.com"
+    );
+    this.wallet = privateKey
+      ? new ethers.Wallet(privateKey, this.provider)
+      : undefined;
     this.subAccountId = subAccountId;
     this.network = network;
     this.client = axios.create({

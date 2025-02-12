@@ -8,12 +8,12 @@ import { WebSocketSubscriptions } from "./websocket/subscriptions";
 import { Info } from "./api/info";
 
 export class DeskExchange {
-  public auth: Auth;
-  public exchange: Exchange;
-  public info: Info;
-  public wsClient: WebSocketClient;
-  public subscriptions: WebSocketSubscriptions;
-  public enableWs: boolean;
+  public readonly auth: Auth;
+  public readonly exchange: Exchange;
+  public readonly info: Info;
+  public readonly wsClient: WebSocketClient;
+  public readonly subscriptions: WebSocketSubscriptions;
+  public readonly enableWs: boolean;
   private initialized: boolean;
 
   constructor(params: {

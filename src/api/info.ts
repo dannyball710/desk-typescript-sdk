@@ -1,5 +1,5 @@
 import { Auth } from "./auth";
-import { MarketInfo } from "../types";
+import { CollateralInfo, MarketInfo } from "../types";
 import { BROKER_ID } from "../types/constants";
 import { DeskExchange } from "..";
 
@@ -17,5 +17,10 @@ export class Info {
       `/v2/market-info/brokers/${BROKER_ID}`
     );
     return response.data.data as MarketInfo[];
+  }
+
+  public async getCollateralInfos(): Promise<CollateralInfo[]> {
+    const response = await this.auth.client.get(`/v2/collaterals`);
+    return response.data.data as CollateralInfo[];
   }
 }

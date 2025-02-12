@@ -8,8 +8,17 @@ import {
   OrderApiRequest,
   CancelOrderApiRequest,
 } from "../types";
-import { BROKER_ID } from "../types/constants";
+import { BROKER_ID, VAULT_ADDRESS } from "../types/constants";
 import { DeskExchange } from "..";
+import { ethers } from "ethers";
+import vaultAbi from "./vault_abi.json";
+
+const erc20ABI = [
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function allowance(address owner, address spender) view returns (uint256)",
+  "function decimals() view returns (uint8)",
+  "function symbol() view returns (string)",
+];
 
 export class Exchange {
   private auth: Auth;
@@ -18,6 +27,57 @@ export class Exchange {
   constructor(auth: Auth, parent: DeskExchange) {
     this.auth = auth;
     this.parent = parent;
+  }
+
+  public async depositCollateral(
+    tokenAddress: string,
+    amount: number
+  ): Promise<ethers.ContractTransactionReceipt> {
+    if (!this.auth.wallet)
+      throw new Error("PRIVATE_KEY is required in .env file");
+    const erc20 = new ethers.Contract(tokenAddress, erc20ABI, this.auth.wallet);
+    const vaultAddress = VAULT_ADDRESS[this.auth.network];
+    const vaultContract = new ethers.Contract(
+      vaultAddress,
+      vaultAbi,
+      this.auth.wallet
+    );
+    const minDepositAmount = await vaultContract.minDeposits(tokenAddress);
+    const decimals = await erc20.decimals();
+    const amountToDeposit = ethers.parseUnits(amount.toString(), decimals);
+    const tokenSymbol = await erc20.symbol();
+    if (amountToDeposit < minDepositAmount) {
+      throw new Error(
+        `Minimum deposit ${ethers.formatUnits(
+          minDepositAmount,
+          decimals
+        )} ${tokenSymbol}`
+      );
+    }
+
+    const allowance = await erc20.allowance(
+      this.auth.wallet.address,
+      vaultAddress
+    );
+
+    console.log(
+      `Depositing ${amount} ${tokenSymbol} to DESK Exchange for ${this.auth.getSubaccount()}`
+    );
+    if (allowance < amountToDeposit) {
+      const tx = await erc20.approve(vaultAddress, amountToDeposit);
+      console.log(`Approving ${amount} ${tokenSymbol}...`);
+      await tx.wait();
+      console.log(`Approval success!`);
+    }
+
+    const tx = await vaultContract.deposit(
+      tokenAddress,
+      this.auth.getSubaccount(),
+      amountToDeposit
+    );
+    const receipt = (await tx.wait()) as ethers.ContractTransactionReceipt;
+    console.log("Deposit successful!");
+    return receipt;
   }
 
   public async getSubAccountSummary(): Promise<SubaccountSummary> {
