@@ -1,6 +1,6 @@
 {
   "name": "@desk-exchange/typescript-sdk",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Typescript SDK for DESK Exchange API",
   "type": "module",
   "exports": {
@@ -39,17 +39,17 @@
   "license": "MIT",
   "dependencies": {
     "@msgpack/msgpack": "^3.0.0-beta2",
-    "@types/ws": "^8.5.11",
     "axios": "^1.7.2",
     "ethers": "^6.13.2",
-    "typescript": "^5.7.3",
     "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/node": "^20.17.16",
+    "@types/ws": "^8.5.11",
     "dotenv": "^16.4.5",
     "rimraf": "^5.0.0",
     "ts-node": "^10.9.2",
+    "typescript": "^5.7.3",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2"
   },
