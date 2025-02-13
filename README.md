@@ -14,9 +14,9 @@ A TypeScript client for interacting with DESK Exchange API, featuring JWT authen
 ## Installation
 
 ```shell
-npm install @desk-exchange/sdk
+npm install @desk/typescript-sdk
 # or
-yarn add @desk-exchange/sdk
+yarn add @desk/typescript-sdk
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ yarn add @desk-exchange/sdk
 ### Initialize the Client
 
 ```typescript
-import { DeskExchange } from "@desk-exchange/sdk";
+import { DeskExchange } from "@desk/typescript-sdk";
 
 const sdk = new DeskExchange({
   network: "testnet",
