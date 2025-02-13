@@ -1,5 +1,5 @@
 {
-  "name": "@desk-exchange/sdk",
+  "name": "@desk/typescript-sdk",
   "version": "1.0.0",
   "description": "Typescript SDK for DESK Exchange API",
   "type": "module",
