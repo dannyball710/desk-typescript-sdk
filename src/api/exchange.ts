@@ -134,8 +134,35 @@ export class Exchange {
       order_type: request.orderType,
       reduce_only: request.reduceOnly,
       time_in_force: request.timeInForce,
+      wait_for_reply: request.waitForReply,
     } as OrderApiRequest);
     return response.data.data as OrderApiResponse;
+  }
+
+  public async batchPlaceOrder(
+    requests: OrderRequest[]
+  ): Promise<OrderApiResponse[]> {
+    await this.parent.ensureInitialized();
+    const response = await this.auth.client.post(
+      `v2/batch-place-order`,
+      requests.map(
+        (request) =>
+          ({
+            symbol: request.symbol,
+            subaccount: this.auth.getSubaccount(),
+            amount: request.amount,
+            price: request.price,
+            side: request.side,
+            nonce: this.auth.generateNonce(),
+            broker_id: BROKER_ID,
+            order_type: request.orderType,
+            reduce_only: request.reduceOnly,
+            time_in_force: request.timeInForce,
+            wait_for_reply: request.waitForReply,
+          } as OrderApiRequest)
+      )
+    );
+    return response.data.data as OrderApiResponse[];
   }
 
   public async cancelOrder(

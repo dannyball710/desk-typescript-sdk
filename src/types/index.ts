@@ -56,6 +56,7 @@ export interface OrderRequest {
   orderType: "Limit" | "Market" | "StopMarket" | "TakeProfitMarket";
   reduceOnly: boolean;
   timeInForce?: "GTC" | "IOC" | "FOK" | undefined;
+  waitForReply?: boolean;
 }
 
 export interface OrderApiRequest {
@@ -69,6 +70,7 @@ export interface OrderApiRequest {
   order_type: "Limit" | "Market" | "StopMarket" | "TakeProfitMarket";
   reduce_only: boolean;
   time_in_force: "GTC" | "IOC" | "FOK";
+  wait_for_reply?: boolean;
 }
 
 export interface OrderApiResponse {
