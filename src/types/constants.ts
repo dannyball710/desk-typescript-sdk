@@ -3,6 +3,11 @@ export const BASE_URLS = {
   testnet: "https://stg-trade-api.happytrading.global",
 };
 
+export const CRM_URLS = {
+  mainnet: "https://api.desk.exchange",
+  testnet: "https://dev-api.desk.exchange",
+};
+
 export const WSS_URLS = {
   mainnet: "wss://ws-api.happytrading.global/ws",
   testnet: "wss://stg-trade-ws-api.happytrading.global/ws",

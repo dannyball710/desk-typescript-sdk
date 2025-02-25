@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 import { ethers } from "ethers";
 import axios, { AxiosInstance } from "axios";
-import { BASE_URLS } from "../types/constants";
+import { BASE_URLS, CRM_URLS } from "../types/constants";
 import { Network } from "../types";
 
 export class Auth {
@@ -9,6 +9,7 @@ export class Auth {
   public readonly subAccountId: number;
   private authenticated: boolean;
   public readonly client: AxiosInstance;
+  public readonly crmClient: AxiosInstance;
   public readonly network: Network;
   public readonly provider: ethers.Provider;
 
@@ -31,6 +32,12 @@ export class Auth {
         "Content-Type": "application/json",
       },
     });
+    this.crmClient = axios.create({
+      baseURL: CRM_URLS[network],
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     this.authenticated = false;
   }
 
@@ -43,21 +50,30 @@ export class Auth {
   public async generateJwt() {
     if (!this.wallet) return;
     const nonce = this.generateNonce();
-    const message = `generate jwt for ${this.wallet.address?.toLowerCase()} and subaccount id ${
-      this.subAccountId
-    } to trade on happytrading.global with nonce: ${nonce}`;
+    const message = `Welcome to DESK!\n\nPlease sign this message to verify ownership of your wallet and proceed. By signing, you confirm the following: you have read, understood, and agreed to the Terms & Conditions, Privacy Policy, and any other relevant terms and conditions announced by DESK.\n\nThis request will not trigger a blockchain transaction or cost any gas fees.\n\nWallet address: ${this.wallet.address?.toLowerCase()}\nSub-account id: ${this.subAccountId.toString()}\nNonce: ${nonce}`;
     const signature = await this.wallet.signMessage(message);
 
-    const response = await this.client.post(`/v2/auth/evm`, {
+    const orderbookJwtResponse = await this.client.post(`/v2/auth/evm`, {
       account: this.wallet.address,
       subaccount_id: this.subAccountId.toString(),
       nonce,
       signature,
     });
 
-    if (response.status === 200) {
-      const jwt = response.data.data.jwt;
-      this.client.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
+    const crmJwtResponse = await this.crmClient.post(`/v1/users/auth`, {
+      nonce: nonce,
+      signature: signature,
+      subaccount_id: this.subAccountId.toString(),
+      wallet_address: this.wallet.address,
+    });
+
+    if (orderbookJwtResponse.status === 200 && crmJwtResponse.status === 200) {
+      this.client.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${orderbookJwtResponse.data.data.jwt}`;
+      this.crmClient.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${crmJwtResponse.data.data.jwt}`;
       this.authenticated = true;
     } else {
       throw new Error("Could not generate JWT");
