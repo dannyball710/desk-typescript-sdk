@@ -164,3 +164,10 @@ export interface CollateralInfo {
   withdrawal_base_fee: string;
   priority: number;
 }
+
+export interface HistorialFundingRateData {
+  funding_rate: string;
+  apr: string;
+  avg_premium_index: string;
+  created_at: number;
+} 
