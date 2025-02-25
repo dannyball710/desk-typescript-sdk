@@ -28,3 +28,12 @@ export const VAULT_ADDRESS = {
 };
 
 export const BROKER_ID = "DESK-SDK";
+
+export enum StreamType {
+  Orderbook = "l2BookV2",
+  Trades = "tradesV2",
+  MarkPrices = "markPricesV2",
+  CollateralPrices = "collateralPricesV2",
+  OrderUpdatesV2 = "orderUpdatesV2",
+  PositionUpdatesV2 = "positionUpdatesV2",
+}

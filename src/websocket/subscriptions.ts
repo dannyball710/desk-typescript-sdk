@@ -1,13 +1,21 @@
 import { DeskExchange } from "..";
-import { MarkPrice, OrderBook } from "../types";
+import {
+  CollateralPriceStreamMessage,
+  MarkPrice,
+  OrderBook,
+  OrderUpdateStreamMessage,
+  PositionUpdateStreamMessage,
+  TradeStreamMessage,
+} from "../types";
 import { WebSocketClient } from "./connection";
+import { StreamType } from "../types/constants";
 
-type SubscriptionType = "markPricesV2" | "l2BookV2";
 type MessageHandler = (message: any) => void;
 
 interface Subscription {
-  type: SubscriptionType;
+  type: StreamType;
   symbol?: string;
+  subaccount?: string;
 }
 
 interface SubscriptionCallback {
@@ -76,7 +84,7 @@ export class WebSocketSubscriptions {
       throw new Error("Callback must be a function");
     }
 
-    const subscription: Subscription = { type: "markPricesV2" };
+    const subscription: Subscription = { type: StreamType.MarkPrices };
 
     const messageHandler: MessageHandler = (message: any) => {
       if (message.type === "markPricesV2" && message.data) {
@@ -95,7 +103,7 @@ export class WebSocketSubscriptions {
   }
 
   async unsubscribeFromMarkPrices(): Promise<void> {
-    const subscription: Subscription = { type: "markPricesV2" };
+    const subscription: Subscription = { type: StreamType.MarkPrices };
     this.removeSubscription(subscription);
     await this.unsubscribe(subscription);
   }
@@ -108,10 +116,10 @@ export class WebSocketSubscriptions {
       throw new Error("Callback must be a function");
     }
 
-    const subscription: Subscription = { type: "l2BookV2", symbol };
+    const subscription: Subscription = { type: StreamType.Orderbook, symbol };
 
     const messageHandler: MessageHandler = (message: any) => {
-      if (message.type === "l2BookV2" && message.data) {
+      if (message.type === StreamType.Orderbook && message.data) {
         callback(message.data as OrderBook);
       }
     };
@@ -122,7 +130,134 @@ export class WebSocketSubscriptions {
   }
 
   async unsubscribeFromOrderbook(symbol: string): Promise<void> {
-    const subscription: Subscription = { type: "l2BookV2", symbol };
+    const subscription: Subscription = { type: StreamType.Orderbook, symbol };
+    this.removeSubscription(subscription);
+    await this.unsubscribe(subscription);
+  }
+
+  async subscribeToTrades(
+    symbol: string,
+    callback: (data: TradeStreamMessage) => void
+  ): Promise<void> {
+    if (typeof callback !== "function") {
+      throw new Error("Callback must be a function");
+    }
+
+    const subscription: Subscription = {
+      type: StreamType.Trades,
+      symbol,
+    };
+
+    const messageHandler: MessageHandler = (message: any) => {
+      if (message.type === StreamType.Trades && message.data) {
+        callback(message.data as TradeStreamMessage);
+      }
+    };
+
+    this.addSubscription(subscription, callback, messageHandler);
+    this.ws.on("message", messageHandler);
+    await this.subscribe(subscription);
+  }
+
+  async unsubscribeFromTrades(symbol: string): Promise<void> {
+    const subscription: Subscription = { type: StreamType.Trades, symbol };
+    this.removeSubscription(subscription);
+    await this.unsubscribe(subscription);
+  }
+
+  async subscribeToCollateralPrices(
+    callback: (data: CollateralPriceStreamMessage) => void
+  ): Promise<void> {
+    if (typeof callback !== "function") {
+      throw new Error("Callback must be a function");
+    }
+
+    const subscription: Subscription = {
+      type: StreamType.CollateralPrices,
+    };
+
+    const messageHandler: MessageHandler = (message: any) => {
+      if (message.type === StreamType.CollateralPrices && message.data) {
+        callback(message.data as CollateralPriceStreamMessage);
+      }
+    };
+
+    this.addSubscription(subscription, callback, messageHandler);
+    this.ws.on("message", messageHandler);
+    await this.subscribe(subscription);
+  }
+
+  async unsubscribeFromCollateralPrices(symbol: string): Promise<void> {
+    const subscription: Subscription = {
+      type: StreamType.CollateralPrices,
+      symbol,
+    };
+    this.removeSubscription(subscription);
+    await this.unsubscribe(subscription);
+  }
+
+  async subscribeToOrderUpdates(
+    subaccount: string | undefined,
+    callback: (data: OrderUpdateStreamMessage) => void
+  ): Promise<void> {
+    if (typeof callback !== "function") {
+      throw new Error("Callback must be a function");
+    }
+
+    const subscription: Subscription = {
+      type: StreamType.OrderUpdatesV2,
+      subaccount: subaccount || this.parent.auth.getSubaccount(),
+    };
+
+    const messageHandler: MessageHandler = (message: any) => {
+      if (message.type === StreamType.OrderUpdatesV2 && message.data) {
+        callback(message.data as OrderUpdateStreamMessage);
+      }
+    };
+
+    this.addSubscription(subscription, callback, messageHandler);
+    this.ws.on("message", messageHandler);
+    await this.subscribe(subscription);
+  }
+
+  async unsubscribeFromOrderUpdates(symbol: string): Promise<void> {
+    const subscription: Subscription = {
+      type: StreamType.OrderUpdatesV2,
+      symbol,
+    };
+    this.removeSubscription(subscription);
+    await this.unsubscribe(subscription);
+  }
+
+  async subscribeToPositionUpdates(
+    subaccount: string | undefined,
+    callback: (data: PositionUpdateStreamMessage) => void
+  ): Promise<void> {
+    if (typeof callback !== "function") {
+      throw new Error("Callback must be a function");
+    }
+
+    const subscription: Subscription = {
+      type: StreamType.PositionUpdatesV2,
+      subaccount: subaccount || this.parent.auth.getSubaccount(),
+    };
+
+    const messageHandler: MessageHandler = (message: any) => {
+      if (message.type === StreamType.PositionUpdatesV2 && message.data) {
+        callback(message.data as PositionUpdateStreamMessage);
+      }
+    };
+
+    this.addSubscription(subscription, callback, messageHandler);
+    this.ws.on("message", messageHandler);
+    await this.subscribe(subscription);
+  }
+
+  async unsubscribeFromPositionUpdates(symbol: string): Promise<void> {
+    const subscription: Subscription = {
+      type: StreamType.PositionUpdatesV2,
+      symbol,
+    };
     this.removeSubscription(subscription);
     await this.unsubscribe(subscription);
   }
