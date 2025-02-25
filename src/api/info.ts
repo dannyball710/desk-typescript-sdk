@@ -1,5 +1,5 @@
 import { Auth } from "./auth";
-import { CollateralInfo, MarketInfo } from "../types";
+import { CollateralInfo, HistorialFundingRateData, MarketInfo } from "../types";
 import { BROKER_ID } from "../types/constants";
 import { DeskExchange } from "..";
 
@@ -22,5 +22,27 @@ export class Info {
   public async getCollateralInfos(): Promise<CollateralInfo[]> {
     const response = await this.auth.client.get(`/v2/collaterals`);
     return response.data.data as CollateralInfo[];
+  }
+
+  public async getHistoricalFundingRates(
+    symbol: string,
+    from: number,
+    to: number
+  ): Promise<HistorialFundingRateData[]> {
+    const response = await this.auth.client.get(
+      `/v2/funding-rate-history/${symbol}`,
+      {
+        params: { from, to },
+      }
+    );
+    return response.data.data as HistorialFundingRateData[];
+  }
+
+  // Get current 1h funding rate
+  public async getCurrentFundingRate(symbol: string): Promise<string> {
+    const response = await this.auth.client.get("/v2/premium-index", {
+      params: { symbol },
+    });
+    return response.data.data.last_funding_rate;
   }
 }
