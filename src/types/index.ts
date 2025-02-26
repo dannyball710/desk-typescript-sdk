@@ -170,4 +170,63 @@ export interface HistorialFundingRateData {
   apr: string;
   avg_premium_index: string;
   created_at: number;
-} 
+}
+
+export type StreamMessage = {
+  type: string;
+};
+
+export type TradeStreamMessage = StreamMessage & {
+  symbol: string;
+  data: {
+    price: string;
+    quantity: string;
+    side: string;
+    tradedAt: Date;
+  };
+};
+
+export type CollateralPriceStreamMessage = StreamMessage & {
+  collateralId: string;
+  asset: string;
+  price: string;
+};
+
+export enum OrderUpdateStatus {
+  Open = "Open",
+  Filled = "Filled",
+  Canceled = "Canceled",
+  Expired = "Expired",
+  NotFound = "NotFound",
+}
+
+export enum OrderUpdateClientStatus {
+  PartialFilled = "PartialFilled",
+}
+
+export type OrderUpdateStreamMessage = StreamMessage & {
+  subaccount: string;
+  data: {
+    symbol: string;
+    avgPrice: string;
+    originalQuantity: string;
+    filledQuantity: string;
+    side: string;
+    orderType: string;
+    status: OrderUpdateStatus;
+    orderUpdatedAt: Date;
+    clientOrderId: string;
+    orderDigest: string;
+    tif: string;
+  };
+};
+
+export type PositionUpdateStreamMessage = StreamMessage & {
+  subaccount: string
+  data: {
+    symbol: string
+    quantity: string
+    avgEntryPrice: string
+    side: string
+  }
+}
