@@ -135,6 +135,7 @@ export class Exchange {
       reduce_only: request.reduceOnly,
       time_in_force: request.timeInForce,
       wait_for_reply: request.waitForReply,
+      trigger_price: request.triggerPrice
     } as OrderApiRequest);
     return response.data.data as OrderApiResponse;
   }
@@ -147,19 +148,20 @@ export class Exchange {
       `v2/batch-place-order`,
       requests.map(
         (request) =>
-          ({
-            symbol: request.symbol,
-            subaccount: this.auth.getSubaccount(),
-            amount: request.amount,
-            price: request.price,
-            side: request.side,
-            nonce: this.auth.generateNonce(),
-            broker_id: BROKER_ID,
-            order_type: request.orderType,
-            reduce_only: request.reduceOnly,
-            time_in_force: request.timeInForce,
-            wait_for_reply: request.waitForReply,
-          } as OrderApiRequest)
+        ({
+          symbol: request.symbol,
+          subaccount: this.auth.getSubaccount(),
+          amount: request.amount,
+          price: request.price,
+          side: request.side,
+          nonce: this.auth.generateNonce(),
+          broker_id: BROKER_ID,
+          order_type: request.orderType,
+          reduce_only: request.reduceOnly,
+          time_in_force: request.timeInForce,
+          wait_for_reply: request.waitForReply,
+          trigger_price: request.triggerPrice
+        } as OrderApiRequest)
       )
     );
     return response.data.data as OrderApiResponse[];

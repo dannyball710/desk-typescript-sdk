@@ -57,6 +57,7 @@ export interface OrderRequest {
   reduceOnly: boolean;
   timeInForce?: "GTC" | "IOC" | "FOK" | undefined;
   waitForReply?: boolean;
+  triggerPrice?: string;
 }
 
 export interface OrderApiRequest {
@@ -71,6 +72,7 @@ export interface OrderApiRequest {
   reduce_only: boolean;
   time_in_force: "GTC" | "IOC" | "FOK";
   wait_for_reply?: boolean;
+  trigger_price?: string;
 }
 
 export interface OrderApiResponse {
