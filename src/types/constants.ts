@@ -27,7 +27,7 @@ export const VAULT_ADDRESS = {
   [CHAIN_ID.arbitrumSepolia]: "0x6e664f5025ee54704040a970d2bfa1ecbbc20fd4",
 };
 
-export const BROKER_ID = "DESK-SDK";
+export const BROKER_ID = "DESK-UI";
 
 export enum StreamType {
   Orderbook = "l2BookV2",
